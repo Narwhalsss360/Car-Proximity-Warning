@@ -3,24 +3,24 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31612.314
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Car Proximity Warning", "Car Proximity Warning\Car Proximity Warning.vcxproj", "{C5F80730-F44F-4478-BDAE-6634EFC2CA88}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HC-SR04-0.0.0", "E:\Users\sandr\Documents\Arduino\libraries\HC-SR04\HC-SR04-0.0.0.vcxitems", "{A55A7767-E460-4AC7-80B5-3AD9C59B7A3E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Car Proximity System", "Car Proximity System\Car Proximity System.vcxproj", "{CC9CBB45-356D-4C26-B115-0141B862C0A5}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		E:\Users\sandr\Documents\Arduino\libraries\HC-SR04\HC-SR04-0.0.0.vcxitems*{a55a7767-e460-4ac7-80b5-3ad9c59b7a3e}*SharedItemsImports = 9
-		E:\Users\sandr\Documents\Arduino\libraries\HC-SR04\HC-SR04-0.0.0.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
+		..\Nars-Libraries\Libraries\Nars-Arduino-Libraries\Nars-Arduino-Libraries-1.0.0.vcxitems*{cc9cbb45-356d-4c26-b115-0141b862c0a5}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Debug|x86.ActiveCfg = Debug|Win32
-		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Debug|x86.Build.0 = Debug|Win32
-		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Release|x86.ActiveCfg = Release|Win32
-		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Release|x86.Build.0 = Release|Win32
+		{CC9CBB45-356D-4C26-B115-0141B862C0A5}.Debug|x86.ActiveCfg = Debug|Win32
+		{CC9CBB45-356D-4C26-B115-0141B862C0A5}.Debug|x86.Build.0 = Debug|Win32
+		{CC9CBB45-356D-4C26-B115-0141B862C0A5}.Release|x86.ActiveCfg = Release|Win32
+		{CC9CBB45-356D-4C26-B115-0141B862C0A5}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
