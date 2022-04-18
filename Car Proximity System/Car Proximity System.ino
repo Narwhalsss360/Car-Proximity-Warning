@@ -7,15 +7,13 @@
 #define SENSLOW 0.0001
 #define SENSHIGH 1
 #define SENSCOUNT 4
-#define MININTERVAL 5
+#define MINDISTANCE 3
 #define FRONTI 0
-#define RIGHTI 0
-#define BACKI 0
-#define LEFTI 0
+#define RIGHTI 1
+#define BACKI 2
+#define LEFTI 3
 #define TESTTIME 1000
 #define SAVEINTERVAL 300000
-#define SKIPTEST
-#define DEBUG
 #pragma endregion
 
 #pragma region Typedef
@@ -31,8 +29,8 @@ struct PINS
 {
 	const SENSORS sensors;
 	const byte brightnessOutput = 2,
-		clicker[4] = { 12, 13, 17, 16 },
-		brightnessWiper = A0,
+		clicker[4] = { 16, 17, 13, 12 },
+		ledEnable = 14,
 		sensitivity = A1;
 };
 #pragma endregion
@@ -46,7 +44,7 @@ unsigned long lastTimeSaved = 0;
 unsigned int distance[4] = { 0, 0, 0, 0 };
 unsigned int clickInterval[4] = { 0, 0, 0, 0 };
 float sensitivity = 1;
-byte brightness = 255;
+bool ledEnable = true;
 
 SR04 sensors[4] = { SR04(pins.sensors.front[ECHO], pins.sensors.front[TRIGGER]), SR04(pins.sensors.right[ECHO], pins.sensors.right[TRIGGER]), SR04(pins.sensors.back[ECHO], pins.sensors.back[TRIGGER]), SR04(pins.sensors.left[ECHO], pins.sensors.left[TRIGGER]) };
 #pragma endregion
@@ -59,6 +57,7 @@ void setup()
 	pinMode(pins.clicker[BACKI], OUTPUT);
 	pinMode(pins.clicker[LEFTI], OUTPUT);
 	pinMode(pins.brightnessOutput, OUTPUT); 
+	pinMode(pins.ledEnable, OUTPUT);
 	getSaved();
 	Serial.begin(1000000);
 	#ifndef SKIPTEST
@@ -86,27 +85,30 @@ void save()
 
 unsigned int click(unsigned int distance)
 {
-	return (sensitivity * (pow(distance, 2)) + distance + 6);
+	return ((log(1.3) *  sensitivity) * (pow(distance, 2)) + distance + 6);
 	//s = slog(1.3), c = s(d^2 + d + 6)
 }
 
 void getDistances()
 {
+	distance[FRONTI] = sensors[FRONTI].Distance();
+	
 	//slower, in its own loop. minimum 100ms processing time, delay(25) processed 4 times.
-	for (int i = FRONTI; i < SENSCOUNT; i++)
-	{
-		//distance[i] = (unsigned int)sensors[i].Distance();
-	}
+	//for (int i = FRONTI; i < SENSCOUNT; i++)
+	//{
+	//	//distance[i] = (unsigned int)sensors[i].Distance();
+	//}
 }
 
 void pulseOut()
 {
+	digitalWrite(pins.ledEnable, ledEnable);
+
 	for (int i = FRONTI; i < SENSCOUNT; i++)
 	{
-		distance[FRONTI] = 10;
 		clickInterval[i] = click(distance[i]);
 
-		if (distance[i] > MININTERVAL)
+		if (distance[i] > MINDISTANCE)
 		{
 			if (uptime - previousCycle[i] >= clickInterval[i])
 			{
@@ -157,13 +159,12 @@ void pulseOut()
 
 void loop()
 {
-	sensitivity = ((float)mapValue(analogRead(pins.sensitivity), 0, 1023, SENSLOW, SENSHIGH) * log(1.3));
-	brightness = map(analogRead(pins.brightnessWiper), 0, 1023, 0, 255);
-	analogWrite(pins.brightnessOutput, brightness);
+	sensitivity = ((float)mapValue(analogRead(pins.sensitivity), 0, 1023, SENSLOW, SENSHIGH) /*  */);
+	analogWrite(pins.brightnessOutput, 137);
 	getDistances();
 	uptime = millis();
 	pulseOut();
-	
+
 	if (uptime - lastTimeSaved >= SAVEINTERVAL)
 	{
 		lastTimeSaved = uptime;
