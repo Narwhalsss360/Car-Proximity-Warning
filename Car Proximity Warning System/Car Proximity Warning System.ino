@@ -1,4 +1,3 @@
-#include <NDefs.h>
 #include <NFuncs.h>
 #include <NHCSR04.h>
 #include <NTimer.h>
@@ -6,7 +5,7 @@
 #include <NPush.h>
 
 #define DEBUG
-#define TIME
+//#define TIME
 
 #define ROTARY_DEBOUNCE_TIME 30
 #define PUSH_DEBOUNCE 30
@@ -16,7 +15,10 @@
 #define MAX_DISTANCE 60
 #define SENSITIVITY_MIN 1
 #define SENSITIVITY_MAX 20
-#define DEFAULT_SENSITIVTY 6
+
+#define ROTARY_SENSITIVITY_MIN 0
+#define ROTARY_SENSITIVITY_MAX 99
+#define DEFAULT_ROTARY_SENSITIVITY 26
 
 #ifdef DEBUG
 #include <PerfTimer.h>
@@ -66,12 +68,13 @@ SR04 sensors[4] =
 	SR04(pins.sensors[BACK][TRIGGER], pins.sensors[BACK][ECHO]),
 	SR04(pins.sensors[LEFT][TRIGGER], pins.sensors[LEFT][ECHO])
 };
-double sensitivity = DEFAULT_SENSITIVTY;
+double sensitivity;
 uint32_t lastClick[4] = { ZERO };
 
 Push push(pins.rotary[PIN_S], INPUT_PULLUP, PUSH_DEBOUNCE);
 Rotary rotary(pins.rotary[PIN_A], pins.rotary[PIN_B], true, INPUT_PULLUP, ROTARY_DEBOUNCE_TIME);
 ROTARYSTATES rotaryState;
+uint8_t rotarySensitivity = DEFAULT_ROTARY_SENSITIVITY;
 
 void rotaryISR()
 {
@@ -90,20 +93,47 @@ void save()
 #endif
 }
 
+void inputs()
+{
+	rotaryState = (ROTARYSTATES)rotary.getState();
+	push.update();
+	
+	switch (rotaryState)
+	{
+	case COUNTER_CLOCKWISE:
+		rotarySensitivity--;
+#ifdef DEBUG
+		Serial.println("Rotary turned CCW.");
+#endif // DEBUG
+		break;
+	case CLOCKWISE:
+		rotarySensitivity++;
+#ifdef DEBUG
+		Serial.println("Rotary turned CW.");
+#endif // DEBUG
+		break;
+	default:
+		break;
+	}
+
+	rotarySensitivity = constrain(rotarySensitivity, ROTARY_SENSITIVITY_MIN, ROTARY_SENSITIVITY_MAX);
+	sensitivity = mapf(rotarySensitivity, ROTARY_SENSITIVITY_MIN, ROTARY_SENSITIVITY_MAX, SENSITIVITY_MIN, SENSITIVITY_MAX);
+	
+	if (push.pressed())
+	{
+		rotarySensitivity = DEFAULT_ROTARY_SENSITIVITY;
+#ifdef DEBUG
+		Serial.println("Pushed.");
+#endif // DEBUG
+	}
+}
+
 double getInterval(double d)
 {
 	if (d > 99)
 		return UINT16_MAX;
 	return ((pow(d, 2) / pow(sensitivity, 3)) + d + (6 * sensitivity));
 	// y = (x^2/s^3) + 5x + 60s
-}
-
-void setup()
-{
-	pinMode(pins.clickers[FRONT], OUTPUT);
-#ifdef DEBUG
-	Serial.begin(1000000);
-#endif // DEBUG
 }
 
 void click()
@@ -120,14 +150,21 @@ void click()
 	}
 #if (defined(DEBUG) && defined(TIME))
 	t.stop();
-	Serial.println("click(): " + String(t.totalTime));
+	Serial.println("click(): " + String(t.totalTime) + ".");
 #endif
+}
+
+void setup()
+{
+	pinMode(pins.clickers[FRONT], OUTPUT);
+#ifdef DEBUG
+	Serial.begin(1000000);
+#endif // DEBUG
 }
 
 void loop()
 {
-	rotaryState = (ROTARYSTATES)rotary.getState();
-	push.update();
+	inputs();
 	click();
 	NTimer.update();
 }
