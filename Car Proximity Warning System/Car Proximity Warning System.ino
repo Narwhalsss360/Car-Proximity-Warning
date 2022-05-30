@@ -2,10 +2,16 @@
 #include <NFuncs.h>
 #include <NHCSR04.h>
 #include <NTimer.h>
+#include <NRotary.h>
+#include <NPush.h>
 
 #define DEBUG
+#define TIME
 
-#define SENSOR_COUNT 4
+#define ROTARY_DEBOUNCE_TIME 30
+#define PUSH_DEBOUNCE 30
+
+#define SENSOR_COUNT 1
 #define MIN_DISTANCE 3
 #define MAX_DISTANCE 60
 #define SENSITIVITY_MIN 1
@@ -48,11 +54,11 @@ struct PINS
 	},
 		clickers[4] = { 13, 14, 15, 16 },
 		ledEnable = 17,
-		rotary[3] = { 2, 3, 4 },
-		power = 18;
+		rotary[3] = { 2, 3, 4 };
 };
 
 constexpr PINS pins;
+
 SR04 sensors[4] = 
 {
 	SR04(pins.sensors[FRONT][TRIGGER], pins.sensors[FRONT][ECHO]),
@@ -60,9 +66,17 @@ SR04 sensors[4] =
 	SR04(pins.sensors[BACK][TRIGGER], pins.sensors[BACK][ECHO]),
 	SR04(pins.sensors[LEFT][TRIGGER], pins.sensors[LEFT][ECHO])
 };
-double sensitivity = 3;
+double sensitivity = DEFAULT_SENSITIVTY;
 uint32_t lastClick[4] = { ZERO };
-uint16_t intervals[4] = { UINT16_MAX };
+
+Push push(pins.rotary[PIN_S], INPUT_PULLUP, PUSH_DEBOUNCE);
+Rotary rotary(pins.rotary[PIN_A], pins.rotary[PIN_B], true, INPUT_PULLUP, ROTARY_DEBOUNCE_TIME);
+ROTARYSTATES rotaryState;
+
+void rotaryISR()
+{
+	rotary.serviceRoutine();
+}
 
 void getSaved()
 {
@@ -71,10 +85,12 @@ void getSaved()
 
 void save()
 {
-
+#ifdef DEBUG
+	Serial.println("Saving...");
+#endif
 }
 
-double calculate(double d)
+double getInterval(double d)
 {
 	if (d > 99)
 		return UINT16_MAX;
@@ -85,19 +101,33 @@ double calculate(double d)
 void setup()
 {
 	pinMode(pins.clickers[FRONT], OUTPUT);
+#ifdef DEBUG
 	Serial.begin(1000000);
+#endif // DEBUG
+}
+
+void click()
+{
+#if (defined(DEBUG) && defined(TIME))
+	PerfTimer t(true, micros);
+#endif
+	for (uint8_t side = ZERO; side < SENSOR_COUNT; side++)
+	{
+		if (interval(lastClick[side], getInterval(sensors[side].centimeters())))
+			digitalWrite(pins.clickers[side], HIGH);
+		else
+			digitalWrite(pins.clickers[side], LOW);
+	}
+#if (defined(DEBUG) && defined(TIME))
+	t.stop();
+	Serial.println("click(): " + String(t.totalTime));
+#endif
 }
 
 void loop()
 {
-	intervals[FRONT] = calculate(sensors[FRONT].centimeters());
-	if (interval(lastClick[FRONT], intervals[FRONT]))
-	{
-		digitalWrite(pins.clickers[FRONT], HIGH);
-	}
-	else
-	{
-		digitalWrite(pins.clickers[FRONT], LOW);
-	}
+	rotaryState = (ROTARYSTATES)rotary.getState();
+	push.update();
+	click();
 	NTimer.update();
 }
