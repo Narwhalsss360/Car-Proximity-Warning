@@ -49,7 +49,7 @@ struct PINS
 {
 	const byte sensors[4][2] =
 	{
-		{ 15, 14 },
+		{ 5, 6 },
 		{ 7, 8 },
 		{ 9, 10 },
 		{ 11, 12 }
