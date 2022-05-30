@@ -22,6 +22,7 @@
 
 #ifdef DEBUG
 #include <PerfTimer.h>
+double oldSensitivity;
 #endif
 
 enum SIDES
@@ -119,6 +120,14 @@ void inputs()
 	rotarySensitivity = constrain(rotarySensitivity, ROTARY_SENSITIVITY_MIN, ROTARY_SENSITIVITY_MAX);
 	sensitivity = mapf(rotarySensitivity, ROTARY_SENSITIVITY_MIN, ROTARY_SENSITIVITY_MAX, SENSITIVITY_MIN, SENSITIVITY_MAX);
 	
+#ifdef DEBUG
+	if (oldSensitivity != sensitivity)
+	{
+		oldSensitivity = sensitivity;
+		Serial.println("New sensitivity: " + String(oldSensitivity));
+	}
+#endif // DEBUG
+
 	if (push.pressed())
 	{
 		rotarySensitivity = DEFAULT_ROTARY_SENSITIVITY;
@@ -133,7 +142,7 @@ double getInterval(double d)
 	if (d > 99)
 		return UINT16_MAX;
 	return ((pow(d, 2) / pow(sensitivity, 3)) + d + (6 * sensitivity));
-	// y = (x^2/s^3) + 5x + 60s
+	// y = (x^2/s^3) + x + 6s
 }
 
 void click()
@@ -148,9 +157,17 @@ void click()
 		else
 			digitalWrite(pins.clickers[side], LOW);
 	}
-#if (defined(DEBUG) && defined(TIME))
+#ifdef DEBUG
+#ifdef TIME
 	t.stop();
 	Serial.println("click(): " + String(t.totalTime) + ".");
+#endif
+	String output = "Distance:\n";
+	for (uint8_t side = ZERO; side < SENSOR_COUNT; side++)
+	{
+		output += "    [" + String(side) + "]: " + String(sensors[side].centimeters(false) + '\n');
+	}
+	Serial.println(output);
 #endif
 }
 
