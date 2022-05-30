@@ -1,0 +1,9 @@
+[submodule "NHC-SR04"]
+	path = NHC-SR04
+	url = git@github.com:Narwhalsss360/NHC-SR04.git
+[submodule "NFuncs"]
+	path = NFuncs
+	url = git@github.com:Narwhalsss360/NFuncs.git
+[submodule "NDefs"]
+	path = NDefs
+	url = git@github.com:Narwhalsss360/NDefs.git
