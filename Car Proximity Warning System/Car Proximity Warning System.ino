@@ -6,7 +6,7 @@
 
 #define DEBUG
 //#define TIME
-//#define DIST
+#define DIST
 #define PULSE
 
 #define ROTARY_DEBOUNCE_TIME 30
@@ -178,7 +178,7 @@ void click()
 #endif
 
 #ifdef PULSE
-	String time = "Distance:\n";
+	String time = "Time:\n";
 	for (uint8_t side = ZERO; side < SENSOR_COUNT; side++)
 	{
 		time += "    [" + String(side) + "]: " + String(sensors[side].ping()) + '\n';
