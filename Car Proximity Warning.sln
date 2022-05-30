@@ -20,6 +20,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NTimer", "NTimer\NTimer.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NRotary", "NRotary\NRotary.vcxitems", "{C3A94ED2-679D-44FE-A6FE-4BB7B3D58880}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NPush", "NPush\NPush.vcxitems", "{7A568D34-EAAF-418C-85D3-78BA7431C45A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -41,11 +43,13 @@ Global
 		NDefs\NDefs.vcxitems*{14c9dc9f-6259-48ae-89cd-21382b2a3088}*SharedItemsImports = 9
 		NHC-SR04\NHCSR04.vcxitems*{5134ba3d-722c-45e4-8a9b-1403fc44b697}*SharedItemsImports = 9
 		NFuncs\NFuncs.vcxitems*{5e64ea8b-9189-4edf-86e2-6bfbeb350314}*SharedItemsImports = 9
+		NPush\NPush.vcxitems*{7a568d34-eaaf-418c-85d3-78ba7431c45a}*SharedItemsImports = 9
 		NTimer\NTimer.vcxitems*{b71d598b-cba5-4070-ab75-eec486cd193a}*SharedItemsImports = 9
 		NRotary\NRotary.vcxitems*{c3a94ed2-679d-44fe-a6fe-4bb7b3d58880}*SharedItemsImports = 9
 		NDefs\NDefs.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
 		NFuncs\NFuncs.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
 		NHC-SR04\NHCSR04.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
+		NPush\NPush.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
 		NRotary\NRotary.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
 		NTimer\NTimer.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
 	EndGlobalSection

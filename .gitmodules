@@ -13,3 +13,6 @@
 [submodule "NRotary"]
 	path = NRotary
 	url = git@github.com:Narwhalsss360/NRotary.git
+[submodule "NPush"]
+	path = NPush
+	url = git@github.com:Narwhalsss360/NPush.git
