@@ -8,6 +8,9 @@
 #define SENSOR_COUNT 4
 #define MIN_DISTANCE 3
 #define MAX_DISTANCE 60
+#define SENSITIVITY_MIN 1
+#define SENSITIVITY_MAX 3
+#define DEFAULT_SENSITIVTY 
 
 #ifdef DEBUG
 #include <PerfTimer.h>
@@ -57,6 +60,7 @@ SR04 sensors[4] =
 	SR04(pins.sensors[BACK][TRIGGER], pins.sensors[BACK][ECHO]),
 	SR04(pins.sensors[LEFT][TRIGGER], pins.sensors[LEFT][ECHO])
 };
+double sensitivity;
 
 void getSaved()
 {
@@ -66,6 +70,12 @@ void getSaved()
 void save()
 {
 
+}
+
+double calculate(uint16_t d)
+{
+	return ((pow(d, 2) / pow(sensitivity, 3)) + (5 * d) + (60 * sensitivity));
+	// y = (x^2/s^3) + 5x + 60s
 }
 
 void setup()
