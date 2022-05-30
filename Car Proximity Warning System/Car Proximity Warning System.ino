@@ -7,7 +7,6 @@
 #define DEBUG
 //#define TIME
 #define DIST
-#define PULSE
 
 #define ROTARY_DEBOUNCE_TIME 30
 #define PUSH_DEBOUNCE 30
@@ -172,18 +171,9 @@ void click()
 	String output = "Distance:\n";
 	for (uint8_t side = ZERO; side < SENSOR_COUNT; side++)
 	{
-		output += "    [" + String(side) + "]: " + String(sensors[side].centimeters(false) + '\n');
+		output += "    [" + String(side) + "]: " + String(sensors[side].centimeters(false)) + " Time: " + String(sensors[side].ping()) + '\n';
 	}
 	Serial.println(output);
-#endif
-
-#ifdef PULSE
-	String time = "Time:\n";
-	for (uint8_t side = ZERO; side < SENSOR_COUNT; side++)
-	{
-		time += "    [" + String(side) + "]: " + String(sensors[side].ping()) + '\n';
-	}
-	Serial.println(time);
 #endif
 
 #endif
