@@ -3,6 +3,8 @@
 #include <NHCSR04.h>
 #include <NTimer.h>
 
+#define DEBUG
+
 #define SENSOR_COUNT 4
 #define MIN_DISTANCE 3
 #define MAX_DISTANCE 60
@@ -58,7 +60,7 @@ SR04 sensors[4] =
 
 void getSaved()
 {
-
+	
 }
 
 void save()
