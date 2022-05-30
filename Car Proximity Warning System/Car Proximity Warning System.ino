@@ -55,8 +55,8 @@ struct PINS
 		{ 11, 12 }
 	},
 		clickers[4] = { 13, 14, 15, 16 },
-		ledEnable = 17,
-		rotary[3] = { 2, 3, 4 };
+		rotary[3] = { 2, 3, 4 },
+		ledEnable = 17;
 };
 
 constexpr PINS pins;
@@ -157,6 +157,10 @@ void click()
 void setup()
 {
 	pinMode(pins.clickers[FRONT], OUTPUT);
+	pinMode(pins.clickers[RIGHT], OUTPUT);
+	pinMode(pins.clickers[BACK], OUTPUT);
+	pinMode(pins.clickers[LEFT], OUTPUT);
+	pinMode(pins.ledEnable, INPUT_PULLUP);
 #ifdef DEBUG
 	Serial.begin(1000000);
 #endif // DEBUG
@@ -164,7 +168,7 @@ void setup()
 
 void loop()
 {
+	NTimer.update();
 	inputs();
 	click();
-	NTimer.update();
 }
