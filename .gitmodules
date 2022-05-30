@@ -7,3 +7,6 @@
 [submodule "NDefs"]
 	path = NDefs
 	url = git@github.com:Narwhalsss360/NDefs.git
+[submodule "NTimer"]
+	path = NTimer
+	url = git@github.com:Narwhalsss360/NTimer.git

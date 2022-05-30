@@ -16,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NTimer", "NTimer\NTimer.vcxitems", "{B71D598B-CBA5-4070-AB75-EEC486CD193A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -37,8 +39,10 @@ Global
 		NDefs\NDefs.vcxitems*{14c9dc9f-6259-48ae-89cd-21382b2a3088}*SharedItemsImports = 9
 		NHC-SR04\NHCSR04.vcxitems*{5134ba3d-722c-45e4-8a9b-1403fc44b697}*SharedItemsImports = 9
 		NFuncs\NFuncs.vcxitems*{5e64ea8b-9189-4edf-86e2-6bfbeb350314}*SharedItemsImports = 9
+		NTimer\NTimer.vcxitems*{b71d598b-cba5-4070-ab75-eec486cd193a}*SharedItemsImports = 9
 		NDefs\NDefs.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
 		NFuncs\NFuncs.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
 		NHC-SR04\NHCSR04.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
+		NTimer\NTimer.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
 	EndGlobalSection
 EndGlobal
