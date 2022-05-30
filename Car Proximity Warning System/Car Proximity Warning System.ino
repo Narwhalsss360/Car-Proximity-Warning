@@ -9,8 +9,8 @@
 #define MIN_DISTANCE 3
 #define MAX_DISTANCE 60
 #define SENSITIVITY_MIN 1
-#define SENSITIVITY_MAX 3
-#define DEFAULT_SENSITIVTY 
+#define SENSITIVITY_MAX 20
+#define DEFAULT_SENSITIVTY 6
 
 #ifdef DEBUG
 #include <PerfTimer.h>
@@ -41,7 +41,7 @@ struct PINS
 {
 	const byte sensors[4][2] =
 	{
-		{ 5, 6 },
+		{ 15, 14 },
 		{ 7, 8 },
 		{ 9, 10 },
 		{ 11, 12 }
@@ -60,7 +60,9 @@ SR04 sensors[4] =
 	SR04(pins.sensors[BACK][TRIGGER], pins.sensors[BACK][ECHO]),
 	SR04(pins.sensors[LEFT][TRIGGER], pins.sensors[LEFT][ECHO])
 };
-double sensitivity;
+double sensitivity = 3;
+uint32_t lastClick[4] = { ZERO };
+uint16_t intervals[4] = { UINT16_MAX };
 
 void getSaved()
 {
@@ -72,20 +74,30 @@ void save()
 
 }
 
-double calculate(uint16_t d)
+double calculate(double d)
 {
-	return ((pow(d, 2) / pow(sensitivity, 3)) + (5 * d) + (60 * sensitivity));
+	if (d > 99)
+		return UINT16_MAX;
+	return ((pow(d, 2) / pow(sensitivity, 3)) + d + (6 * sensitivity));
 	// y = (x^2/s^3) + 5x + 60s
 }
 
 void setup()
 {
-#ifdef DEBUG
+	pinMode(pins.clickers[FRONT], OUTPUT);
 	Serial.begin(1000000);
-#endif
 }
 
 void loop()
 {
+	intervals[FRONT] = calculate(sensors[FRONT].centimeters());
+	if (interval(lastClick[FRONT], intervals[FRONT]))
+	{
+		digitalWrite(pins.clickers[FRONT], HIGH);
+	}
+	else
+	{
+		digitalWrite(pins.clickers[FRONT], LOW);
+	}
 	NTimer.update();
 }
