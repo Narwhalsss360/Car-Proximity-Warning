@@ -3,10 +3,14 @@
 #include <NTimer.h>
 #include <NRotary.h>
 #include <NPush.h>
+#include <EEPROM.h>
 
 #define DEBUG
 //#define TIME
-#define DIST
+//#define DIST
+#define SAVE
+
+#define SAVE_INTERVAL 3m
 
 #define ROTARY_DEBOUNCE_TIME 30
 #define PUSH_DEBOUNCE 30
@@ -25,6 +29,11 @@
 #include <PerfTimer.h>
 double oldSensitivity;
 #endif
+
+enum EEPROMADDRESS
+{
+	ROTARY_SENSITIVITY
+};
 
 enum SIDES
 {
@@ -85,13 +94,18 @@ void rotaryISR()
 
 void getSaved()
 {
-	
+	rotarySensitivity = EEPROM.read(ROTARY_SENSITIVITY);
+#if defined(DEBUG) && defined(SAVE)
+	Serial.println("Got from saved: " + String(rotarySensitivity));
+#endif
+
 }
 
-void save()
+void save(ElapsedEvent e)
 {
-#ifdef DEBUG
-	Serial.println("Saving...");
+	EEPROM.update(ROTARY_SENSITIVITY, rotarySensitivity);
+#if defined(DEBUG) && defined(SAVE)
+	Serial.println("Saved: " + String(rotarySensitivity));
 #endif
 }
 
@@ -161,15 +175,18 @@ void click()
 
 void setup()
 {
+#ifdef DEBUG
+	Serial.begin(1000000);
+#endif
+	getSaved();
 	pinMode(pins.clickers[FRONT], OUTPUT);
 	pinMode(pins.clickers[RIGHT], OUTPUT);
 	pinMode(pins.clickers[BACK], OUTPUT);
 	pinMode(pins.clickers[LEFT], OUTPUT);
 	pinMode(pins.ledEnable, INPUT_PULLUP);
 	addInterrupt(pins.rotary[PIN_A], rotaryISR, rotary.mode);
-#ifdef DEBUG
-	Serial.begin(1000000);
-#endif // DEBUG
+	NTimer.addEvent({ 0, SAVE_INTERVAL, save });
+	NTimer.start();
 }
 
 void loop()
