@@ -6,9 +6,7 @@
 #include <EEPROM.h>
 
 #define DEBUG
-//#define TIME
 //#define DIST
-#define SAVE
 
 #define SAVE_INTERVAL 3m
 
@@ -24,11 +22,6 @@
 #define ROTARY_SENSITIVITY_MIN 0
 #define ROTARY_SENSITIVITY_MAX 99
 #define DEFAULT_ROTARY_SENSITIVITY 26
-
-#ifdef DEBUG
-#include <PerfTimer.h>
-double oldSensitivity;
-#endif
 
 enum EEPROMADDRESS
 {
@@ -97,18 +90,11 @@ void getSaved()
 	rotarySensitivity = EEPROM.read(ROTARY_SENSITIVITY);
 	if (rotarySensitivity > 99)
 		rotarySensitivity = DEFAULT_ROTARY_SENSITIVITY;
-#if defined(DEBUG) && defined(SAVE)
-	Serial.println("Got from saved: " + String(rotarySensitivity));
-#endif
-
 }
 
 void save(ElapsedEvent e)
 {
 	EEPROM.update(ROTARY_SENSITIVITY, rotarySensitivity);
-#if defined(DEBUG) && defined(SAVE)
-	Serial.println("Saved: " + String(rotarySensitivity));
-#endif
 }
 
 void inputs()
@@ -143,9 +129,6 @@ double getInterval(double d)
 
 void click()
 {
-#if (defined(DEBUG) && defined(TIME))
-	PerfTimer t(true, micros);
-#endif
 	for (uint8_t side = ZERO; side < SENSOR_COUNT; side++)
 	{
 		if (interval(lastClick[side], getInterval(sensors[side].centimeters())))
@@ -153,14 +136,6 @@ void click()
 		else
 			digitalWrite(pins.clickers[side], LOW);
 	}
-#ifdef DEBUG
-
-#ifdef TIME
-
-	t.stop();
-	Serial.println("click(): " + String(t.totalTime) + ".");
-
-#endif
 
 #ifdef DIST
 	String output = "RS: ";
@@ -170,8 +145,6 @@ void click()
 		output += "    [" + String(side) + "]: " + String(sensors[side].centimeters(false)) + " Time: " + String(sensors[side].ping()) + '\n';
 	}
 	Serial.println(output);
-#endif
-
 #endif
 }
 
