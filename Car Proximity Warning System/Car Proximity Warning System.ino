@@ -5,8 +5,6 @@
 #include <NPush.h>
 #include <EEPROM.h>
 
-#define DEBUG
-
 #define SAVE_INTERVAL 3m
 
 #define ROTARY_DEBOUNCE_TIME 30
