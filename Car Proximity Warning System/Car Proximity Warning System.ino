@@ -95,6 +95,8 @@ void rotaryISR()
 void getSaved()
 {
 	rotarySensitivity = EEPROM.read(ROTARY_SENSITIVITY);
+	if (rotarySensitivity > 99)
+		rotarySensitivity = DEFAULT_ROTARY_SENSITIVITY;
 #if defined(DEBUG) && defined(SAVE)
 	Serial.println("Got from saved: " + String(rotarySensitivity));
 #endif
