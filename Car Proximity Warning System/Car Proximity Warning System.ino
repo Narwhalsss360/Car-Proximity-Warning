@@ -103,16 +103,10 @@ void inputs()
 	switch (rotaryState)
 	{
 	case COUNTER_CLOCKWISE:
-		rotarySensitivity--;
-#ifdef DEBUG
-		Serial.println("Rotary turned CCW.");
-#endif // DEBUG
+		rotarySensitivity++;
 		break;
 	case CLOCKWISE:
-		rotarySensitivity++;
-#ifdef DEBUG
-		Serial.println("Rotary turned CW.");
-#endif // DEBUG
+		rotarySensitivity--;
 		break;
 	default:
 		break;
@@ -120,14 +114,6 @@ void inputs()
 
 	rotarySensitivity = constrain(rotarySensitivity, ROTARY_SENSITIVITY_MIN, ROTARY_SENSITIVITY_MAX);
 	sensitivity = mapf(rotarySensitivity, ROTARY_SENSITIVITY_MIN, ROTARY_SENSITIVITY_MAX, SENSITIVITY_MIN, SENSITIVITY_MAX);
-	
-#ifdef DEBUG
-	if (oldSensitivity != sensitivity)
-	{
-		oldSensitivity = sensitivity;
-		Serial.println("New sensitivity: " + String(oldSensitivity));
-	}
-#endif // DEBUG
 
 	if (push.pressed())
 	{
@@ -168,7 +154,9 @@ void click()
 #endif
 
 #ifdef DIST
-	String output = "Distance:\n";
+	String output = "Sensitivity: ";
+	output += String(sensitivity);
+	output += " Distance:\n";
 	for (uint8_t side = ZERO; side < SENSOR_COUNT; side++)
 	{
 		output += "    [" + String(side) + "]: " + String(sensors[side].centimeters(false)) + " Time: " + String(sensors[side].ping()) + '\n';
@@ -186,6 +174,7 @@ void setup()
 	pinMode(pins.clickers[BACK], OUTPUT);
 	pinMode(pins.clickers[LEFT], OUTPUT);
 	pinMode(pins.ledEnable, INPUT_PULLUP);
+	addInterrupt(pins.rotary[PIN_A], rotaryISR, rotary.mode);
 #ifdef DEBUG
 	Serial.begin(1000000);
 #endif // DEBUG
