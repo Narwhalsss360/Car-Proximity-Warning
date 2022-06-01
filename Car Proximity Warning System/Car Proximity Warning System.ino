@@ -14,7 +14,7 @@
 #define SENSOR_COUNT 4
 #define MIN_DISTANCE 3
 #define MAX_DISTANCE 60
-#define SENSITIVITY_MIN 1
+#define SENSITIVITY_MIN 3
 #define SENSITIVITY_MAX 20
 
 #define ROTARY_SENSITIVITY_MIN 0
@@ -103,39 +103,18 @@ void inputs()
 	switch (rotaryState)
 	{
 	case COUNTER_CLOCKWISE:
-		rotarySensitivity--;
-#ifdef DEBUG
-		Serial.println("Rotary turned CCW.");
-#endif // DEBUG
+		if (rotarySensitivity < 99)
+			rotarySensitivity++;
 		break;
 	case CLOCKWISE:
-		rotarySensitivity++;
-#ifdef DEBUG
-		Serial.println("Rotary turned CW.");
-#endif // DEBUG
+		if (rotarySensitivity > 0)
+			rotarySensitivity--;
 		break;
 	default:
 		break;
 	}
 
-	rotarySensitivity = constrain(rotarySensitivity, ROTARY_SENSITIVITY_MIN, ROTARY_SENSITIVITY_MAX);
 	sensitivity = mapf(rotarySensitivity, ROTARY_SENSITIVITY_MIN, ROTARY_SENSITIVITY_MAX, SENSITIVITY_MIN, SENSITIVITY_MAX);
-	
-#ifdef DEBUG
-	if (oldSensitivity != sensitivity)
-	{
-		oldSensitivity = sensitivity;
-		Serial.println("New sensitivity: " + String(oldSensitivity));
-	}
-#endif // DEBUG
-
-	if (push.pressed())
-	{
-		rotarySensitivity = DEFAULT_ROTARY_SENSITIVITY;
-#ifdef DEBUG
-		Serial.println("Pushed.");
-#endif // DEBUG
-	}
 }
 
 double getInterval(double d)
@@ -168,7 +147,8 @@ void click()
 #endif
 
 #ifdef DIST
-	String output = "Distance:\n";
+	String output = "RS: ";
+	output += String(rotarySensitivity) + " S: " + String(sensitivity) + " Distance:\n";
 	for (uint8_t side = ZERO; side < SENSOR_COUNT; side++)
 	{
 		output += "    [" + String(side) + "]: " + String(sensors[side].centimeters(false)) + " Time: " + String(sensors[side].ping()) + '\n';
@@ -186,6 +166,7 @@ void setup()
 	pinMode(pins.clickers[BACK], OUTPUT);
 	pinMode(pins.clickers[LEFT], OUTPUT);
 	pinMode(pins.ledEnable, INPUT_PULLUP);
+	addInterrupt(pins.rotary[PIN_A], rotaryISR, rotary.mode);
 #ifdef DEBUG
 	Serial.begin(1000000);
 #endif // DEBUG
