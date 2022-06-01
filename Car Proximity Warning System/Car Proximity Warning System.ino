@@ -6,7 +6,6 @@
 #include <EEPROM.h>
 
 #define DEBUG
-//#define DIST
 
 #define SAVE_INTERVAL 3m
 
@@ -19,6 +18,7 @@
 #define SENSITIVITY_MIN 3
 #define SENSITIVITY_MAX 20
 
+#define SENS_RESET_HOLD_TIME 500
 #define ROTARY_SENSITIVITY_MIN 0
 #define ROTARY_SENSITIVITY_MAX 99
 #define DEFAULT_ROTARY_SENSITIVITY 26
@@ -97,6 +97,14 @@ void save(ElapsedEvent e)
 	EEPROM.update(ROTARY_SENSITIVITY, rotarySensitivity);
 }
 
+void pushRelease(unsigned int holdTime)
+{
+	if (holdTime > SENS_RESET_HOLD_TIME)
+	{
+		rotarySensitivity = DEFAULT_ROTARY_SENSITIVITY;
+	}
+}
+
 void inputs()
 {
 	rotaryState = (ROTARYSTATES)rotary.getState();
@@ -137,7 +145,7 @@ void click()
 			digitalWrite(pins.clickers[side], LOW);
 	}
 
-#ifdef DIST
+#ifdef DEBUG
 	String output = "RS: ";
 	output += String(rotarySensitivity) + " S: " + String(sensitivity) + " Distance:\n";
 	for (uint8_t side = ZERO; side < SENSOR_COUNT; side++)
@@ -159,6 +167,7 @@ void setup()
 	pinMode(pins.clickers[BACK], OUTPUT);
 	pinMode(pins.clickers[LEFT], OUTPUT);
 	pinMode(pins.ledEnable, INPUT_PULLUP);
+	push.onRelease = pushRelease;
 	addInterrupt(pins.rotary[PIN_A], rotaryISR, rotary.mode);
 	NTimer.addEvent({ 0, SAVE_INTERVAL, save });
 	NTimer.start();
