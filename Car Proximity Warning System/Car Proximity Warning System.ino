@@ -142,16 +142,6 @@ void click()
 		else
 			digitalWrite(pins.clickers[side], LOW);
 	}
-
-#ifdef DEBUG
-	String output = "RS: ";
-	output += String(rotarySensitivity) + " S: " + String(sensitivity) + " Distance:\n";
-	for (uint8_t side = ZERO; side < SENSOR_COUNT; side++)
-	{
-		output += "    [" + String(side) + "]: " + String(sensors[side].centimeters(false)) + " Time: " + String(sensors[side].ping()) + '\n';
-	}
-	Serial.println(output);
-#endif
 }
 
 void setup()
