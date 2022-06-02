@@ -17,9 +17,9 @@
 #define SENSITIVITY_MAX 20
 
 #define SENS_RESET_HOLD_TIME 500
-#define ROTARY_SENSITIVITY_MIN 0
-#define ROTARY_SENSITIVITY_MAX 99
-#define DEFAULT_ROTARY_SENSITIVITY 32
+#define ROTARY_SENSITIVITY_MIN 2
+#define ROTARY_SENSITIVITY_MAX 100
+#define DEFAULT_ROTARY_SENSITIVITY 50
 
 enum EEPROMADDRESS
 {
@@ -129,8 +129,8 @@ double getInterval(double d)
 {
 	if (d > 99)
 		return UINT16_MAX;
-	return ((pow(d, 2) / pow(sensitivity, 3)) + d + (6 * sensitivity));
-	// y = (x^2/s^3) + x + 6s
+	return sensitivity * ( sqrt( (15.5536 * d) + 46.66) );
+	// y = a sqrt(15.5536x + 46.66)
 }
 
 void click()
